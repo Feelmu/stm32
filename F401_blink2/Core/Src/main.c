@@ -43,7 +43,15 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+uint8_t btn_press = 0;
 
+uint16_t blink_delays[] = {
+        500,
+        250,
+        100
+};
+
+uint8_t blink_delay = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -67,6 +75,12 @@ int _write(int fd, char* ptr, int len){
             return -1;
     }
     return -1;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+    if (GPIO_Pin == BTN_Pin){
+        btn_press = 1;
+    }
 }
 /* USER CODE END 0 */
 
@@ -113,7 +127,7 @@ int main(void)
 
       now = HAL_GetTick();
 
-      if (now - last_blink >= 500){
+      if (now - last_blink >= blink_delays[blink_delay]){
 
           printf("Toggling GPIO\n");
 
@@ -126,6 +140,15 @@ int main(void)
 
           loop_cnt = 0;
           last_tick = now;
+      }
+
+      if (btn_press == 1) {
+          printf("Button pressed\n");
+
+          ++blink_delay;
+          if (blink_delay >= sizeof(blink_delays) / sizeof(blink_delays[0])) blink_delay = 0;
+          // every time I press the button, it shortens delay until it reaches the size of the array
+          btn_press = 0;
       }
 
       ++loop_cnt;
@@ -231,11 +254,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  /*Configure GPIO pin : BTN_Pin */
+  GPIO_InitStruct.Pin = BTN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BTN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
@@ -243,6 +266,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
