@@ -1,0 +1,10 @@
+15:55:57 **** Incremental Build of configuration Debug for project f401_blink1 ****
+make -j8 all 
+arm-none-eabi-size  f401_blink1.elf 
+   text	   data	    bss	    dec	    hex	filename
+   7724	     12	   1644	   9380	   24a4	f401_blink1.elf
+Finished building: default.size.stdout
+ 
+
+15:55:57 Build Finished. 0 errors, 0 warnings. (took 130ms)
+
