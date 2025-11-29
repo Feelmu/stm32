@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;03_Timer_External_LED/02_Timer2.ioc&apos; to &apos;03_Timer_External_LED.ioc&apos;" description="Rename resource &apos;02_Timer2.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="02_Timer2.ioc" name="03_Timer_External_LED.ioc" stamp="1764428397671" updateReferences="true"/>
+</session>
